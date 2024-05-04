@@ -1,5 +1,58 @@
 # 说明
 基于jsencrypt-3.3.2改造
-- 支持公钥解密
 - 支持中文分段加密 JSEncrypt.encryptUnicodeLong
 - 支持中文分段解密 JSEncrypt.decryptUnicodeLong
+
+
+```js
+var publicKey = `-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEAu9JkfGhKWsCkODOnG4e0xv1XwS6dKqeC5pTJixcXpZ1ylPatTaaD
+9SpsAHE84Gj28LGdyMQzkLK+M6kPouZmijkww62cJriCDAaM74PSLAdDvs6Bhg/p
+kabdnHBBr0KaGEcVQyEPtW4tpuCjcBO+ePedlo115RengBl5izwQI8TCdjr+QjXJ
+iKqw0fDd9anr0FV85oI79rNFMixUg5gsG014KZC27rsBKXERf7jM7k3gG5CKg3RO
+CUo9lMzKpcHBKfhxFVDZOI2IUlUfGzs4NMSDv0waisbpxji2DhhKoESGM9B5ruEg
+xyJlVH1Qoeoo11uTl8MUsACmfUUfyWqvFwIDAQAB
+-----END RSA PUBLIC KEY-----`
+var privateKey = `-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAu9JkfGhKWsCkODOnG4e0xv1XwS6dKqeC5pTJixcXpZ1ylPat
+TaaD9SpsAHE84Gj28LGdyMQzkLK+M6kPouZmijkww62cJriCDAaM74PSLAdDvs6B
+hg/pkabdnHBBr0KaGEcVQyEPtW4tpuCjcBO+ePedlo115RengBl5izwQI8TCdjr+
+QjXJiKqw0fDd9anr0FV85oI79rNFMixUg5gsG014KZC27rsBKXERf7jM7k3gG5CK
+g3ROCUo9lMzKpcHBKfhxFVDZOI2IUlUfGzs4NMSDv0waisbpxji2DhhKoESGM9B5
+ruEgxyJlVH1Qoeoo11uTl8MUsACmfUUfyWqvFwIDAQABAoIBABCYq7ZuhLt2MEyj
+C84b9LZspnd0hgDB4og7d3+p37YLrpdJINEuuJROVlLHrshpngBwwW9/HstXcAUi
+mDYdw8vM9+kiixzEywEDBysW69hmH+9ZUgqll07+frCXHsa8zN7+UPuojTnL7Y7E
+ZMy/geIwhyVJhLRknbFtDtdlzEtMrdsRnD+Wj0odR5Wf5s+4SCuIgFDSOp6U8h+2
+kXaz6uls3JEzlHIGtkVlSFGPFFoOzj9OwQ1HmX6qGVYFldpqhiddNS0BvLDl95HV
+bSvUeqKReGx36U7wOwEAo90VxfeqfrwW7P1X1feq6MPEQiN0nl6TuASho0qzqC4G
+5T6ArqkCgYEA4GBNZ28ICY0r7sp+zMuQqynWOmhOLIRTE7VPsv07WrcFHYddMIcH
+kfTRW0UCL51/N4kJlg6DLkkR9Wvi+iEJOhrLSYuzGtQPcfpe32ALRs39EX+A8i31
+ksrjT65/jOTjb0asEd3oHegBTAtJ29oL80dWHx3VDMx4NXB8UH7DKrMCgYEA1kst
+JOVbJ8syS0AYy3etThjrCrv64b7fTNKMNiKdpEkxrSoV7Bj2TkRWQNLmGKVSu+4I
+3KwVNN6yNBWv3YPdPO4Muik/82mMFH7odM/Y4ThE557HUlI6gnh/fYy/YBVGXwBX
+xR/YSN9bFCDLkzUc8i7lSmBOI6KvK/gXqYWKbA0CgYBQutWezZg6t4yDEmClFukq
+bJcj1Lur0MCDas0OPYbJkOhKQ5YIC81xeoCJMj8jGqvXM3s7fmU8lhXcE8FK9e/3
+9AQIpjb/BCW6gLb57/ietSbE0Pd4K4kcE9vNo59I9mHOe8MVep41hHBTCAy/Cakb
+EyOtdnJddIQb1ikkXTejeQKBgDYwypjC+1tD0lMfQWXqvMO8H2wWf2oo95UYxWZH
+OLA75jkRJHwRD/BY7ar06kUfQZ3OoyUSy0YUbuIm/dM5rm/jDwrgtZBbh5YDRcuM
+aB8EOMCN8X/K1Yr659qbBiZJGwOZNZje5bX/7atYY8K1Mr23yDoXworWcA/hbDJt
+V8TdAoGBAMv94D7UX0NR9kKUeBVdSuBlLHPuIxjU9as4N/+1mmJl7ts8/PNSCs2H
+nf03XN4avQZB9TaQiD3CafMtZ4T5GRlfe6SGxl+I5ZNRGcm5MYRNDcyLi3Q0DYpG
+W+pPZ1ieM+VB3jEtZlwi3WtoSIQ18Imwme6bnOxabKfFR5/ruFnJ
+-----END RSA PRIVATE KEY-----`
+var JSEncrypt = new JSEncrypt()
+
+// 公钥加密
+JSEncrypt.setPublicKey(publicKey)
+JSEncrypt.encryptUnicodeLong('明文')
+// 私钥解密
+JSEncrypt.setPrivateKey(privateKey)
+JSEncrypt.decryptUnicodeLong('密文')
+
+// 私钥加密
+JSEncrypt.setPrivateKey(privateKey)
+JSEncrypt.encryptUnicodeLong('明文')
+// 公钥解密
+JSEncrypt.setPublicKey(publicKey)
+JSEncrypt.decryptUnicodeLong('密文')
+```

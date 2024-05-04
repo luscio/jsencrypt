@@ -140,7 +140,8 @@ export class RSAKey {
         if (m == null) {
             return null;
         }
-        const c = this.doPublic(m);
+        // const c = this.doPublic(m);
+        const c = this.doPrivate(m);
         if (c == null) {
             return null;
         }
@@ -229,6 +230,7 @@ export class RSAKey {
     public decrypt(ctext:string) {
         const c = parseBigInt(ctext, 16);
         const m = this.doPrivate(c);
+        // const m = this.doPublic(c);
         if (m == null) { return null; }
         return pkcs1unpad2(m, (this.n.bitLength() + 7) >> 3);
     }
@@ -341,9 +343,10 @@ function pkcs1unpad2(d:BigInteger, n:number):string {
     const b = d.toByteArray();
     let i = 0;
     while (i < b.length && b[i] == 0) { ++i; }
-    if (b.length - i != n - 1 || b[i] != 2) {
-        return null;
-    }
+    // 兼容公钥解密
+    // if (b.length - i != n - 1 || b[i] != 2) {
+    //     return null;
+    // }
     ++i;
     while (b[i] != 0) {
         if (++i >= b.length) { return null; }
