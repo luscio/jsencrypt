@@ -324,7 +324,7 @@ export class RSAKey {
 
     //#endregion PUBLIC
 
-    protected n:BigInteger;
+    public n:BigInteger;
     protected e:number;
     protected d:BigInteger;
     protected p:BigInteger;

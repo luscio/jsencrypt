@@ -12,7 +12,7 @@ export declare class RSAKey {
     generateAsync(B: number, E: string, callback: () => void): void;
     sign(text: string, digestMethod: (str: string) => string, digestName: string): string;
     verify(text: string, signature: string, digestMethod: (str: string) => string): boolean;
-    protected n: BigInteger;
+    n: BigInteger;
     protected e: number;
     protected d: BigInteger;
     protected p: BigInteger;
