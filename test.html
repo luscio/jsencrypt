@@ -304,14 +304,15 @@ W+pPZ1ieM+VB3jEtZlwi3WtoSIQ18Imwme6bnOxabKfFR5/ruFnJ
             if (this.encryptForm.type === 'private') {
               JSEncrypt.setPrivateKey(this.privkey)
             }
-            this.encryptForm.encrypted_data = JSEncrypt.encrypt(this.encryptForm.data)
-            if (this.encryptForm.encrypted_data === null) {
+            const encrypted_data = JSEncrypt.encrypt(this.encryptForm.data)
+            if (encrypted_data === null || encrypted_data === false) {
               this.$notify.error({
                 title: '提示',
                 message: 'RSA加密失败'
               })
               return false
             }
+            this.encryptForm.encrypted_data = encrypted_data
           })
         },
         // 分段加密
@@ -326,14 +327,15 @@ W+pPZ1ieM+VB3jEtZlwi3WtoSIQ18Imwme6bnOxabKfFR5/ruFnJ
             if (this.encryptForm.type === 'private') {
               JSEncrypt.setPrivateKey(this.privkey)
             }
-            this.encryptForm.encrypted_data = JSEncrypt.encryptUnicodeLong(this.encryptForm.data)
-            if (this.encryptForm.encrypted_data === null) {
+            const encrypted_data = JSEncrypt.encryptUnicodeLong(this.encryptForm.data)
+            if (encrypted_data === null || encrypted_data === false) {
               this.$notify.error({
                 title: '提示',
                 message: 'RSA分段加密失败'
               })
               return false
             }
+            this.encryptForm.encrypted_data = encrypted_data
           })
         },
         // 解密
@@ -348,14 +350,15 @@ W+pPZ1ieM+VB3jEtZlwi3WtoSIQ18Imwme6bnOxabKfFR5/ruFnJ
             if (this.decryptForm.type === 'private') {
               JSEncrypt.setPrivateKey(this.privkey)
             }
-            this.decryptForm.decrypted_data = JSEncrypt.decrypt(this.decryptForm.data)
-            if (this.decryptForm.decrypted_data === null) {
+            const decrypted_data = JSEncrypt.decrypt(this.decryptForm.data)
+            if (decrypted_data === null || decrypted_data === false) {
               this.$notify.error({
                 title: '提示',
                 message: 'RSA解密失败'
               })
               return false
             }
+            this.decryptForm.decrypted_data = decrypted_data
           })
         },
         // 分段解密
@@ -370,14 +373,15 @@ W+pPZ1ieM+VB3jEtZlwi3WtoSIQ18Imwme6bnOxabKfFR5/ruFnJ
             if (this.decryptForm.type === 'private') {
               JSEncrypt.setPrivateKey(this.privkey)
             }
-            this.decryptForm.decrypted_data = JSEncrypt.decryptUnicodeLong(this.decryptForm.data)
-            if (this.decryptForm.decrypted_data === null) {
+            const decrypted_data = JSEncrypt.decryptUnicodeLong(this.decryptForm.data)
+            if (decrypted_data === null || decrypted_data === false) {
               this.$notify.error({
                 title: '提示',
                 message: 'RSA分段解密失败'
               })
               return false
             }
+            this.decryptForm.decrypted_data = decrypted_data
           })
         },
         // 签名
