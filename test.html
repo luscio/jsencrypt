@@ -1,0 +1,423 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>test-rsa</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="/vendor/element-ui-2.15.14/lib/theme-chalk/index.css">
+  <script src="/vendor/vue-2.6.14/vue-2.6.14.min.js"></script>
+  <script src="/bin/jsencrypt.min.js"></script>
+  <script src="/vendor/crypto-js-4.2.0/crypto-js.js"></script>
+  <script src="/vendor/element-ui-2.15.14/lib/index.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <el-row :gutter="8">
+      <el-col :span="12">
+        <el-card>
+          <div slot="header" class="clearfix">
+            <span>RSA公钥</span>
+          </div>
+          <el-input v-model="pubkey" type="textarea" :rows="9" :cols="64" clearable />
+        </el-card>
+      </el-col>
+
+      <el-col :span="12">
+        <el-card>
+          <div slot="header" class="clearfix">
+            <span>RSA私钥</span>
+          </div>
+          <el-input v-model="privkey" type="textarea" :rows="9" :cols="64" clearable />
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <el-row :gutter="8" style="margin-top: 8px;">
+      <el-col :span="12">
+        <el-card>
+          <div slot="header" class="clearfix">
+            <span>RSA加密</span>
+          </div>
+
+          <el-form :model="encryptForm" :rules="encryptFormRules" ref="encryptForm">
+            <el-form-item label="密钥类型" prop="data">
+              <el-radio-group v-model="encryptForm.type">
+                <el-radio label="public">公钥</el-radio>
+                <el-radio label="private">私钥</el-radio>
+              </el-radio-group>
+            </el-form-item>
+
+            <el-form-item label="明文" prop="data">
+              <el-input v-model="encryptForm.data" type="textarea" :rows="5" placeholder="明文" clearable />
+            </el-form-item>
+
+            <el-form-item label="加密结果" prop="encrypted_data">
+              <el-input v-model="encryptForm.encrypted_data" type="textarea" readonly :rows="5" placeholder="加密结果" clearable />
+            </el-form-item>
+
+            <el-form-item style="margin-bottom: 0;">
+              <el-button type="primary" @click.native="encrypt">加密</el-button>
+              <el-button type="success" @click.native="encryptUnicodeLong">分段加密</el-button>
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-col>
+
+      <el-col :span="12">
+        <el-card>
+          <div slot="header" class="clearfix">
+            <span>RSA解密</span>
+          </div>
+
+          <el-form :model="decryptForm" :rules="decryptFormRules" ref="decryptForm">
+            <el-form-item label="密钥类型" prop="data">
+              <el-radio-group v-model="decryptForm.type">
+                <el-radio label="public">公钥</el-radio>
+                <el-radio label="private">私钥</el-radio>
+              </el-radio-group>
+            </el-form-item>
+
+            <el-form-item label="密文" prop="data">
+              <el-input v-model="decryptForm.data" type="textarea" :rows="5" placeholder="密文" clearable />
+            </el-form-item>
+
+            <el-form-item label="解密结果" prop="decrypted_data">
+              <el-input v-model="decryptForm.decrypted_data" type="textarea" readonly :rows="5" placeholder="解密结果" clearable />
+            </el-form-item>
+
+            <el-form-item style="margin-bottom: 0;">
+              <el-button type="primary" @click.native="decrypt">解密</el-button>
+              <el-button type="success" @click.native="decryptUnicodeLong">分段解密</el-button>
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <el-row :gutter="8" style="margin-top: 8px;">
+      <el-col :span="12">
+        <el-card>
+          <div slot="header" class="clearfix">
+            <span>RSA私钥签名</span>
+          </div>
+
+          <el-form :model="signForm" :rules="signFormRules" ref="signForm">
+            <el-form-item label="数据" prop="data">
+              <el-input v-model="signForm.data" type="textarea" :rows="5" placeholder="数据" clearable />
+            </el-form-item>
+
+            <el-form-item label="签名" prop="signature">
+              <el-input v-model="signForm.signature" readonly type="textarea" :rows="3" placeholder="签名" clearable />
+            </el-form-item>
+
+            <el-form-item style="margin-bottom: 0;">
+              <el-button type="primary" @click.native="sign">签名</el-button>
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-col>
+
+      <el-col :span="12">
+        <el-card>
+          <div slot="header" class="clearfix">
+            <span>RSA公钥验签</span>
+          </div>
+
+          <el-form :model="verifySignForm" :rules="verifySignFormRules" ref="verifySignForm">
+            <el-form-item label="数据" prop="data">
+              <el-input v-model="verifySignForm.data" type="textarea" :rows="5" placeholder="数据" clearable />
+            </el-form-item>
+
+            <el-form-item label="签名" prop="signature">
+              <el-input v-model="verifySignForm.signature" type="textarea" :rows="3" placeholder="签名" clearable />
+            </el-form-item>
+
+            <el-form-item label="验证结果" prop="result">
+              <el-input v-model="verifySignForm.result" placeholder="验证结果" clearable />
+            </el-form-item>
+
+            <el-form-item style="margin-bottom: 0;">
+              <el-button type="primary" @click.native="verify">验证</el-button>
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-col>
+    </el-row>
+  </div>
+  <script>
+    var pubkey = `-----BEGIN RSA PUBLIC KEY-----
+MIIBCgKCAQEAu9JkfGhKWsCkODOnG4e0xv1XwS6dKqeC5pTJixcXpZ1ylPatTaaD
+9SpsAHE84Gj28LGdyMQzkLK+M6kPouZmijkww62cJriCDAaM74PSLAdDvs6Bhg/p
+kabdnHBBr0KaGEcVQyEPtW4tpuCjcBO+ePedlo115RengBl5izwQI8TCdjr+QjXJ
+iKqw0fDd9anr0FV85oI79rNFMixUg5gsG014KZC27rsBKXERf7jM7k3gG5CKg3RO
+CUo9lMzKpcHBKfhxFVDZOI2IUlUfGzs4NMSDv0waisbpxji2DhhKoESGM9B5ruEg
+xyJlVH1Qoeoo11uTl8MUsACmfUUfyWqvFwIDAQAB
+-----END RSA PUBLIC KEY-----`
+    var privkey = `-----BEGIN RSA PRIVATE KEY-----
+MIIEowIBAAKCAQEAu9JkfGhKWsCkODOnG4e0xv1XwS6dKqeC5pTJixcXpZ1ylPat
+TaaD9SpsAHE84Gj28LGdyMQzkLK+M6kPouZmijkww62cJriCDAaM74PSLAdDvs6B
+hg/pkabdnHBBr0KaGEcVQyEPtW4tpuCjcBO+ePedlo115RengBl5izwQI8TCdjr+
+QjXJiKqw0fDd9anr0FV85oI79rNFMixUg5gsG014KZC27rsBKXERf7jM7k3gG5CK
+g3ROCUo9lMzKpcHBKfhxFVDZOI2IUlUfGzs4NMSDv0waisbpxji2DhhKoESGM9B5
+ruEgxyJlVH1Qoeoo11uTl8MUsACmfUUfyWqvFwIDAQABAoIBABCYq7ZuhLt2MEyj
+C84b9LZspnd0hgDB4og7d3+p37YLrpdJINEuuJROVlLHrshpngBwwW9/HstXcAUi
+mDYdw8vM9+kiixzEywEDBysW69hmH+9ZUgqll07+frCXHsa8zN7+UPuojTnL7Y7E
+ZMy/geIwhyVJhLRknbFtDtdlzEtMrdsRnD+Wj0odR5Wf5s+4SCuIgFDSOp6U8h+2
+kXaz6uls3JEzlHIGtkVlSFGPFFoOzj9OwQ1HmX6qGVYFldpqhiddNS0BvLDl95HV
+bSvUeqKReGx36U7wOwEAo90VxfeqfrwW7P1X1feq6MPEQiN0nl6TuASho0qzqC4G
+5T6ArqkCgYEA4GBNZ28ICY0r7sp+zMuQqynWOmhOLIRTE7VPsv07WrcFHYddMIcH
+kfTRW0UCL51/N4kJlg6DLkkR9Wvi+iEJOhrLSYuzGtQPcfpe32ALRs39EX+A8i31
+ksrjT65/jOTjb0asEd3oHegBTAtJ29oL80dWHx3VDMx4NXB8UH7DKrMCgYEA1kst
+JOVbJ8syS0AYy3etThjrCrv64b7fTNKMNiKdpEkxrSoV7Bj2TkRWQNLmGKVSu+4I
+3KwVNN6yNBWv3YPdPO4Muik/82mMFH7odM/Y4ThE557HUlI6gnh/fYy/YBVGXwBX
+xR/YSN9bFCDLkzUc8i7lSmBOI6KvK/gXqYWKbA0CgYBQutWezZg6t4yDEmClFukq
+bJcj1Lur0MCDas0OPYbJkOhKQ5YIC81xeoCJMj8jGqvXM3s7fmU8lhXcE8FK9e/3
+9AQIpjb/BCW6gLb57/ietSbE0Pd4K4kcE9vNo59I9mHOe8MVep41hHBTCAy/Cakb
+EyOtdnJddIQb1ikkXTejeQKBgDYwypjC+1tD0lMfQWXqvMO8H2wWf2oo95UYxWZH
+OLA75jkRJHwRD/BY7ar06kUfQZ3OoyUSy0YUbuIm/dM5rm/jDwrgtZBbh5YDRcuM
+aB8EOMCN8X/K1Yr659qbBiZJGwOZNZje5bX/7atYY8K1Mr23yDoXworWcA/hbDJt
+V8TdAoGBAMv94D7UX0NR9kKUeBVdSuBlLHPuIxjU9as4N/+1mmJl7ts8/PNSCs2H
+nf03XN4avQZB9TaQiD3CafMtZ4T5GRlfe6SGxl+I5ZNRGcm5MYRNDcyLi3Q0DYpG
+W+pPZ1ieM+VB3jEtZlwi3WtoSIQ18Imwme6bnOxabKfFR5/ruFnJ
+-----END RSA PRIVATE KEY-----`
+    var JSEncrypt = new JSEncrypt()
+    new Vue({
+      el: '#app',
+      data() {
+        return {
+          // 公钥
+          pubkey,
+          // 私钥
+          privkey,
+          // 加密
+          encryptForm: {
+            type: 'public',
+            data: '',
+            encrypted_data: '',
+          },
+          encryptFormRules: {
+            data: [{
+              required: true,
+              message: '请输入明文',
+              trigger: ['blur', 'change']
+            }],
+          },
+          // 解密
+          decryptForm: {
+            type: 'public',
+            data: '',
+            decrypted_data: '',
+          },
+          decryptFormRules: {
+            data: [{
+              required: true,
+              message: '请输入解密',
+              trigger: ['blur', 'change']
+            }],
+          },
+          // 签名
+          signForm: {
+            data: '',
+            signature: '',
+          },
+          signFormRules: {
+            data: [{
+              required: true,
+              message: '请输入数据',
+              trigger: ['blur', 'change']
+            }],
+          },
+          // 签名验证
+          verifySignForm: {
+            data: '',
+            signature: '',
+            result: '',
+          },
+          verifySignFormRules: {
+            data: [{
+              required: true,
+              message: '请输入数据',
+              trigger: ['blur', 'change']
+            }],
+            signature: [{
+              required: true,
+              message: '请输入签名',
+              trigger: ['blur', 'change']
+            }],
+          }
+        }
+      },
+      computed: {},
+      watch: {
+        'encryptForm.data': {
+          deep: true,
+          immediate: true,
+          handler: function(nVal, oVal) {
+            if (nVal === '') {
+              this.encryptForm.encrypted_data = ''
+            }
+          }
+        },
+        'decryptForm.data': {
+          deep: true,
+          immediate: true,
+          handler: function(nVal, oVal) {
+            if (nVal === '') {
+              this.decryptForm.decrypted_data = ''
+            }
+          }
+        },
+        'signForm.data': {
+          deep: true,
+          immediate: true,
+          handler: function(nVal, oVal) {
+            if (nVal === '') {
+              this.signForm.signature = ''
+            }
+          }
+        },
+        'verifySignForm': {
+          deep: true,
+          immediate: true,
+          handler: function(nVal, oVal) {
+            if (nVal.data === '' || nVal.signature === '') {
+              this.verifySignForm.result = ''
+            }
+          }
+        },
+      },
+      created() {},
+      destoryed() {},
+      methods: {
+        // 加密
+        encrypt() {
+          this.$refs.encryptForm.validate(valid => {
+            if (!valid) {
+              return false
+            }
+            if (this.encryptForm.type === 'public') {
+              JSEncrypt.setPublicKey(this.pubkey)
+            }
+            if (this.encryptForm.type === 'private') {
+              JSEncrypt.setPrivateKey(this.privkey)
+            }
+            this.encryptForm.encrypted_data = JSEncrypt.encrypt(this.encryptForm.data)
+            if (!this.encryptForm.encrypted_data) {
+              this.$notify.error({
+                title: '提示',
+                message: 'RSA加密失败'
+              })
+              return false
+            }
+          })
+        },
+        // 分段加密
+        encryptUnicodeLong() {
+          this.$refs.encryptForm.validate(valid => {
+            if (!valid) {
+              return false
+            }
+            if (this.encryptForm.type === 'public') {
+              JSEncrypt.setPublicKey(this.pubkey)
+            }
+            if (this.encryptForm.type === 'private') {
+              JSEncrypt.setPrivateKey(this.privkey)
+            }
+            this.encryptForm.encrypted_data = JSEncrypt.encryptUnicodeLong(this.encryptForm.data)
+            if (!this.encryptForm.encrypted_data) {
+              this.$notify.error({
+                title: '提示',
+                message: 'RSA分段加密失败'
+              })
+              return false
+            }
+          })
+        },
+        // 解密
+        decrypt() {
+          this.$refs.decryptForm.validate(valid => {
+            if (!valid) {
+              return false
+            }
+            if (this.decryptForm.type === 'public') {
+              JSEncrypt.setPublicKey(this.pubkey)
+            }
+            if (this.decryptForm.type === 'private') {
+              JSEncrypt.setPrivateKey(this.privkey)
+            }
+            this.decryptForm.decrypted_data = JSEncrypt.decrypt(this.decryptForm.data)
+            if (!this.decryptForm.decrypted_data) {
+              this.$notify.error({
+                title: '提示',
+                message: 'RSA解密失败'
+              })
+              return false
+            }
+          })
+        },
+        // 分段解密
+        decryptUnicodeLong() {
+          this.$refs.decryptForm.validate(valid => {
+            if (!valid) {
+              return false
+            }
+            if (this.decryptForm.type === 'public') {
+              JSEncrypt.setPublicKey(this.pubkey)
+            }
+            if (this.decryptForm.type === 'private') {
+              JSEncrypt.setPrivateKey(this.privkey)
+            }
+            this.decryptForm.decrypted_data = JSEncrypt.decryptUnicodeLong(this.decryptForm.data)
+            if (!this.decryptForm.decrypted_data) {
+              this.$notify.error({
+                title: '提示',
+                message: 'RSA分段解密失败'
+              })
+              return false
+            }
+          })
+        },
+        // 签名
+        sign() {
+          this.$refs.signForm.validate(valid => {
+            if (!valid) {
+              return false
+            }
+            JSEncrypt.setPrivateKey(this.privkey)
+            this.signForm.signature = JSEncrypt.sign(CryptoJS.MD5(this.signForm.data).toString(), CryptoJS.SHA256, 'sha256')
+            if (!this.signForm.signature) {
+              this.$notify.error({
+                title: '提示',
+                message: 'RSA签名失败'
+              })
+              return false
+            }
+          })
+        },
+        // 验证签名
+        verify() {
+          this.$refs.verifySignForm.validate(valid => {
+            if (!valid) {
+              return false
+            }
+            JSEncrypt.setPublicKey(this.pubkey)
+            const verified = JSEncrypt.verify(CryptoJS.MD5(this.verifySignForm.data).toString(), this.verifySignForm.signature, CryptoJS.SHA256)
+            this.verifySignForm.result = verified ? '验证成功' : '验证失败'
+            if (!verified) {
+              this.$notify.error({
+                title: '提示',
+                message: 'RSA验证签名失败'
+              })
+              return false
+            }
+          })
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
