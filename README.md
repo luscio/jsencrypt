@@ -4,6 +4,7 @@
 - 支持中文分段解密 JSEncrypt.decryptUnicodeLong
 
 
+## 使用示例
 ```js
 var publicKey = `-----BEGIN RSA PUBLIC KEY-----
 MIIBCgKCAQEAu9JkfGhKWsCkODOnG4e0xv1XwS6dKqeC5pTJixcXpZ1ylPatTaaD
