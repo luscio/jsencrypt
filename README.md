@@ -41,19 +41,19 @@ V8TdAoGBAMv94D7UX0NR9kKUeBVdSuBlLHPuIxjU9as4N/+1mmJl7ts8/PNSCs2H
 nf03XN4avQZB9TaQiD3CafMtZ4T5GRlfe6SGxl+I5ZNRGcm5MYRNDcyLi3Q0DYpG
 W+pPZ1ieM+VB3jEtZlwi3WtoSIQ18Imwme6bnOxabKfFR5/ruFnJ
 -----END RSA PRIVATE KEY-----`
-var JSEncrypt = new JSEncrypt()
+var rsa = new JSEncrypt()
 
 // 公钥加密
-JSEncrypt.setPublicKey(publicKey)
-JSEncrypt.encryptUnicodeLong('明文')
+rsa.setPublicKey(publicKey)
+rsa.encryptUnicodeLong('明文')
 // 私钥解密
-JSEncrypt.setPrivateKey(privateKey)
-JSEncrypt.decryptUnicodeLong('密文')
+rsa.setPrivateKey(privateKey)
+rsa.decryptUnicodeLong('密文')
 
 // 私钥加密
-JSEncrypt.setPrivateKey(privateKey)
-JSEncrypt.encryptUnicodeLong('明文')
+rsa.setPrivateKey(privateKey)
+rsa.encryptUnicodeLong('明文')
 // 公钥解密
-JSEncrypt.setPublicKey(publicKey)
-JSEncrypt.decryptUnicodeLong('密文')
+rsa.setPublicKey(publicKey)
+rsa.decryptUnicodeLong('密文')
 ```
