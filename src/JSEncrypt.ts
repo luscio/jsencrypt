@@ -44,11 +44,11 @@ export class JSEncrypt {
      * @param {Object|string} key the pem encoded string or an object (with or without header/footer)
      * @public
      */
-    public setKey(key: string) {
+    public setKey(key: string, type: string) {
         if (this.log && this.key) {
             console.warn("A key was already set, overriding existing.");
         }
-        this.key = new JSEncryptRSAKey(key);
+        this.key = new JSEncryptRSAKey(key, type);
     }
 
     /**
@@ -58,7 +58,7 @@ export class JSEncrypt {
      */
     public setPrivateKey(privkey: string) {
         // Create the key.
-        this.setKey(privkey);
+        this.setKey(privkey, 'private');
     }
 
     /**
@@ -68,7 +68,7 @@ export class JSEncrypt {
      */
     public setPublicKey(pubkey: string) {
         // Sets the public key.
-        this.setKey(pubkey);
+        this.setKey(pubkey, 'public');
     }
 
     /**

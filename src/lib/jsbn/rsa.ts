@@ -87,6 +87,7 @@ export class RSAKey {
         this.dmp1 = null;
         this.dmq1 = null;
         this.coeff = null;
+        this.kType = null;
     }
 
     //#region PROTECTED
@@ -334,6 +335,7 @@ export class RSAKey {
     protected dmp1:BigInteger;
     protected dmq1:BigInteger;
     protected coeff:BigInteger;
+    public kType:String;
 
 }
 

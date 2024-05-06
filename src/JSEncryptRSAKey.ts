@@ -14,7 +14,7 @@ import { KJUR } from "./lib/jsrsasign/asn1-1.0";
  * @constructor
  */
 export class JSEncryptRSAKey extends RSAKey {
-    constructor(key?: string) {
+    constructor(key?: string, type?: string) {
         super();
         // Call the super constructor.
         //  RSAKey.call(this);
@@ -30,6 +30,9 @@ export class JSEncryptRSAKey extends RSAKey {
                 // Set the values for the key.
                 this.parsePropertiesFrom(key);
             }
+        }
+        if (type) {
+            this.kType = type;
         }
     }
 
