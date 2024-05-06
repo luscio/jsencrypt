@@ -1,6 +1,6 @@
 {
     "name": "luscio-jsencrypt-plus",
-    "version": "3.3.2",
+    "version": "3.3.3",
     "description": "A Javascript library to perform OpenSSL RSA Encryption, Decryption, and Key Generation.",
     "main": "bin/jsencrypt.js",
     "module": "lib/index.js",
