@@ -98,7 +98,6 @@ export class RSAKey {
         return x.modPowInt(this.e, this.n);
     }
 
-
     // RSAKey.prototype.doPrivate = RSADoPrivate;
     // Perform raw private operation on "x": return x^d (mod n)
     public doPrivate(x:BigInteger) {
@@ -131,7 +130,6 @@ export class RSAKey {
         }
     }
 
-
     // RSAKey.prototype.encrypt = RSAEncrypt;
     // Return the PKCS#1 RSA encryption of "text" as an even-length hex string
     public encrypt(text:string) {
@@ -141,8 +139,14 @@ export class RSAKey {
         if (m == null) {
             return null;
         }
-        // const c = this.doPublic(m);
-        const c = this.doPrivate(m);
+        
+        // const c = this.doPrivate(m);
+        var c;
+        if (this.kType === 'public') {
+            c = this.doPublic(m)
+        } else {
+            c = this.doPrivate(m);
+        }
         if (c == null) {
             return null;
         }
@@ -158,6 +162,21 @@ export class RSAKey {
         return h
     }
 
+    // RSAKey.prototype.decrypt = RSADecrypt;
+    // Return the PKCS#1 RSA decryption of "ctext".
+    // "ctext" is an even-length hex string and the output is a plain string.
+    public decrypt(ctext:string) {
+        const c = parseBigInt(ctext, 16);
+        // const m = this.doPrivate(c);
+        var m;
+        if (this.kType === 'public') {
+            m = this.doPublic(c);
+        } else {
+            m = this.doPrivate(c);
+        }
+        if (m == null) { return null; }
+        return pkcs1unpad2(m, (this.n.bitLength() + 7) >> 3);
+    }
 
     // RSAKey.prototype.setPrivate = RSASetPrivate;
     // Set the private key fields N, e, and d from hex strings
@@ -188,7 +207,6 @@ export class RSAKey {
             console.error("Invalid RSA private key");
         }
     }
-
 
     // RSAKey.prototype.generate = RSAGenerate;
     // Generate a new random private key B bits long, using public expt E
@@ -223,17 +241,6 @@ export class RSAKey {
                 break;
             }
         }
-    }
-
-    // RSAKey.prototype.decrypt = RSADecrypt;
-    // Return the PKCS#1 RSA decryption of "ctext".
-    // "ctext" is an even-length hex string and the output is a plain string.
-    public decrypt(ctext:string) {
-        const c = parseBigInt(ctext, 16);
-        const m = this.doPrivate(c);
-        // const m = this.doPublic(c);
-        if (m == null) { return null; }
-        return pkcs1unpad2(m, (this.n.bitLength() + 7) >> 3);
     }
 
     // Generate a new random private key B bits long, using public expt E

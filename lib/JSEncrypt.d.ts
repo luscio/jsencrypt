@@ -27,7 +27,7 @@ export declare class JSEncrypt {
      * @param {Object|string} key the pem encoded string or an object (with or without header/footer)
      * @public
      */
-    setKey(key: string): void;
+    setKey(key: string, type: string): void;
     /**
      * Proxy method for setKey, for api compatibility
      * @see setKey
