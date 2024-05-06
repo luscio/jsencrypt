@@ -305,7 +305,7 @@ W+pPZ1ieM+VB3jEtZlwi3WtoSIQ18Imwme6bnOxabKfFR5/ruFnJ
               JSEncrypt.setPrivateKey(this.privkey)
             }
             this.encryptForm.encrypted_data = JSEncrypt.encrypt(this.encryptForm.data)
-            if (!this.encryptForm.encrypted_data) {
+            if (this.encryptForm.encrypted_data === null) {
               this.$notify.error({
                 title: '提示',
                 message: 'RSA加密失败'
@@ -327,7 +327,7 @@ W+pPZ1ieM+VB3jEtZlwi3WtoSIQ18Imwme6bnOxabKfFR5/ruFnJ
               JSEncrypt.setPrivateKey(this.privkey)
             }
             this.encryptForm.encrypted_data = JSEncrypt.encryptUnicodeLong(this.encryptForm.data)
-            if (!this.encryptForm.encrypted_data) {
+            if (this.encryptForm.encrypted_data === null) {
               this.$notify.error({
                 title: '提示',
                 message: 'RSA分段加密失败'
@@ -349,7 +349,7 @@ W+pPZ1ieM+VB3jEtZlwi3WtoSIQ18Imwme6bnOxabKfFR5/ruFnJ
               JSEncrypt.setPrivateKey(this.privkey)
             }
             this.decryptForm.decrypted_data = JSEncrypt.decrypt(this.decryptForm.data)
-            if (!this.decryptForm.decrypted_data) {
+            if (this.decryptForm.decrypted_data === null) {
               this.$notify.error({
                 title: '提示',
                 message: 'RSA解密失败'
@@ -371,7 +371,7 @@ W+pPZ1ieM+VB3jEtZlwi3WtoSIQ18Imwme6bnOxabKfFR5/ruFnJ
               JSEncrypt.setPrivateKey(this.privkey)
             }
             this.decryptForm.decrypted_data = JSEncrypt.decryptUnicodeLong(this.decryptForm.data)
-            if (!this.decryptForm.decrypted_data) {
+            if (this.decryptForm.decrypted_data === null) {
               this.$notify.error({
                 title: '提示',
                 message: 'RSA分段解密失败'
