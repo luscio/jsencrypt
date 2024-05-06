@@ -144,8 +144,10 @@ export class RSAKey {
         var c;
         if (this.kType === 'public') {
             c = this.doPublic(m)
-        } else {
+        } else if(this.kType === 'private') {
             c = this.doPrivate(m);
+        } else {
+            return null;
         }
         if (c == null) {
             return null;
@@ -171,8 +173,10 @@ export class RSAKey {
         var m;
         if (this.kType === 'public') {
             m = this.doPublic(c);
-        } else {
+        } else if (this.kType === 'private') {
             m = this.doPrivate(c);
+        } else {
+            return null;
         }
         if (m == null) { return null; }
         return pkcs1unpad2(m, (this.n.bitLength() + 7) >> 3);
