@@ -3,6 +3,7 @@ import { RSAKey } from "./lib/jsbn/rsa";
  * Create a new JSEncryptRSAKey that extends Tom Wu's RSA key object.
  * This object is just a decorator for parsing the key parameter
  * @param {string|Object} key - The key in string format, or an object containing
+ * @param {string|Object} type - public or private
  * the parameters needed to build a RSAKey object.
  * @constructor
  */
